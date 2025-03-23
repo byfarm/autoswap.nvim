@@ -1,10 +1,8 @@
-local log = require("log")
 local M = {}
 
 M.setup = function()
     -- todo
 end
-
 
 local function reset_state_machine()
     -- reset the state machine
@@ -35,54 +33,29 @@ M.get_keys = function(key, typed)
 
     local dl = M.config.delemeter
 
-    if key ~= " " then
-        return key
-    end
-    vim.api.nvim_input("<ESC>vbh\"" .. M.config.yank_register .. "c")
-
-    local yanked_string = vim.fn.getreg(M.config.yank_register)
-
-    log.debug(yanked_string .. dl)
-    if not string.find(yanked_string, dl, 1, true) then
-        vim.api.nvim_input(yanked_string)
-        return key
-    end
-    -- print("made it this far")
-
-    local string_matcher = string.sub(yanked_string, 2, #yanked_string-1)
-    log.debug(string_matcher.."\"")
-    local replace_key = M.config.lookup_table[string_matcher]
-    log.debug(replace_key.."\"")
-
-    if replace_key then
-        log.debug("repkey")
-        vim.api.nvim_input(replace_key)
+    if key_string_empty and key == dl then
+        -- turn the flag on to
+        M.info.add_keys = true
         return key
     end
 
+    if M.info.add_keys and key ~= " " then
+        -- append the key to the keystring
+        M.info.key_string = M.info.key_string .. key
+    elseif M.info.add_keys and key == " " then
+        local replace_key = M.config.lookup_table[M.info.key_string]
+
+        if replace_key then
+            --  delete back to the delemeter into the null buffer and insert the replace key
+            vim.api.nvim_input("<ESC>vF" .. dl .. "\"_c" .. replace_key .. " ")
+        end
+
+        reset_state_machine()
+    end
 
     return key
 end
 
--- if key_string_empty and key == dl then
---     -- turn the flag on to
---     M.info.add_keys = true
---     return key
--- end
---
--- if M.info.add_keys and key ~= " " then
---     -- append the key to the keystring
---     M.info.key_string = M.info.key_string .. key
--- elseif M.info.add_keys and key == " " then
---     local replace_key = M.config.lookup_table[M.info.key_string]
---
---     if replace_key then
---         --  delete back to the delemeter into the null buffer and insert the replace key
---         vim.api.nvim_input("<ESC>vF" .. dl .. "\"_c" .. replace_key .. " ")
---     end
---
---     reset_state_machine()
--- end
 
 M.run_plugin = function()
     vim.on_key(M.get_keys)
