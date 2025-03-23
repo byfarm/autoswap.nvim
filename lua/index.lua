@@ -21,11 +21,15 @@ end
 ---@param typed string
 ---@return string
 M.get_keys = function(key, typed)
-    -- print(M.info.key_string)
-    -- print(vim.api.nvim_get_mode().mode)
-
+    -- if not in insert mode or special charachter (newline) then reset the machine
     if vim.api.nvim_get_mode().mode ~= "i" or in_table(M.config.clears_list, key) then
         reset_state_machine()
+        return key
+    end
+
+    -- if backspace then do -1 from the substring
+    if "<BS>" == vim.fn.keytrans(key) and #M.info.key_string > 0 then
+        M.info.key_string = M.info.key_string:sub(1, #M.info.key_string - 1)
         return key
     end
 
@@ -34,14 +38,16 @@ M.get_keys = function(key, typed)
     local dl = M.config.delemeter
 
     if key_string_empty and key == dl then
-        -- turn the flag on to
+        -- turn the flag on to start adding to keystring
         M.info.add_keys = true
         return key
     end
 
+    -- append the key to the keystring
     if M.info.add_keys and key ~= " " then
-        -- append the key to the keystring
         M.info.key_string = M.info.key_string .. key
+
+    -- try to replace on space
     elseif M.info.add_keys and key == " " then
         local replace_key = M.config.lookup_table[M.info.key_string]
 
@@ -67,7 +73,7 @@ M.info = {
 }
 
 M.config = {
-    clears_list = { "<CR>", "<BS>" },
+    clears_list = { "<CR>", },
     -- delemeter = "\\",
     delemeter = ";",
     yank_register = "f",
