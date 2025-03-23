@@ -9,12 +9,6 @@ local function reset_state_machine()
     M.info.key_string = ""
     M.info.add_keys = false
 end
-local function in_table(tbl, item)
-    for key, value in pairs(tbl) do
-        if value == item then return key end
-    end
-    return false
-end
 
 ---implements fn for vim.on_key()
 ---@param key string
@@ -22,13 +16,14 @@ end
 ---@return string
 M.get_keys = function(key, typed)
     -- if not in insert mode or special charachter (newline) then reset the machine
-    if vim.api.nvim_get_mode().mode ~= "i" or in_table(M.config.clears_list, key) then
+    local translated_key = vim.fn.keytrans(key)
+    if vim.api.nvim_get_mode().mode ~= "i" or M.config.clears_list[translated_key] then
         reset_state_machine()
         return key
     end
 
     -- if backspace then do -1 from the substring
-    if "<BS>" == vim.fn.keytrans(key) and #M.info.key_string > 0 then
+    if "<BS>" == translated_key and #M.info.key_string > 0 then
         M.info.key_string = M.info.key_string:sub(1, #M.info.key_string - 1)
         return key
     end
