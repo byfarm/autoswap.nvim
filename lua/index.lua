@@ -91,8 +91,8 @@ M.config = {
         zeta = "ζ",
         Zeta = "Ζ",
 
-        nthingy = "η",
-        Nthingy = "Η",
+        eta = "η",
+        Eta = "Η",
 
         theta = "θ",
         Theta = "Θ",
@@ -109,14 +109,14 @@ M.config = {
         nu = "ν",
         Nu = "Ν",
 
-        eta = "ξ",
-        Eta = "Ξ",
+        xi = "ξ",
+        Xi = "Ξ",
+
+        pi = "π",
+        Pi = "Π",
 
         rho = "ρ",
         Rho = "Ρ",
-
-        sum = "ς",
-        Sum = "Σ",
 
         sigma = "σ",
         Sigma = "Σ",
@@ -124,17 +124,17 @@ M.config = {
         tau = "τ",
         Tau = "Τ",
 
-        nus = "υ",
-        Nus = "Υ",
+        upsilon = "υ",
+        Upsilon = "Υ",
 
         phi = "φ",
         Phi = "Φ",
 
-        xi = "χ",
-        Xi = "Χ",
+        chi = "χ",
+        Chi = "Χ",
 
-        wave = "ψ",
-        Wave = "Ψ",
+        psi = "ψ",
+        Psi = "Ψ",
 
         omega = "ω",
         Omega = "Ω",
