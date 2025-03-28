@@ -72,7 +72,6 @@ M.config = {
     clears_list = { "<CR>", },
     -- delemeter = "\\",
     delemeter = ";",
-    yank_register = "f",
     lookup_table = {
         alpha = "α",
         Alpha = "Α",
