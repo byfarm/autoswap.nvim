@@ -1,55 +1,61 @@
+local log = require("log")
 local M = {}
-
-M.setup = function()
-    -- todo
-end
+local state_machine = {
+    key_string = "",
+    add_keys = false,
+}
 
 local function reset_state_machine()
     -- reset the state machine
-    M.info.key_string = ""
-    M.info.add_keys = false
+    state_machine.key_string = ""
+    state_machine.add_keys = false
 end
 
 ---implements fn for vim.on_key()
 ---@param key string
 ---@param typed string
 ---@return string
-M.get_keys = function(key, typed)
+local get_keys = function(key, typed)
     -- if not in insert mode or special charachter (newline) then reset the machine
     local translated_key = vim.fn.keytrans(key)
-    if vim.api.nvim_get_mode().mode ~= "i" or M.config.clears_list[translated_key] then
+    if vim.api.nvim_get_mode().mode ~= "i" then
         reset_state_machine()
         return key
     end
 
     -- if backspace then do -1 from the substring
-    if "<BS>" == translated_key and #M.info.key_string > 0 then
-        M.info.key_string = M.info.key_string:sub(1, #M.info.key_string - 1)
+    if "<BS>" == translated_key and #state_machine.key_string > 0 then
+        state_machine.key_string = state_machine.key_string:sub(1, #state_machine.key_string - 1)
         return key
     end
 
-    local key_string_empty = M.info.key_string == ""
+    local key_string_empty = state_machine.key_string == ""
 
     local dl = M.config.delemeter
 
     if key_string_empty and key == dl then
         -- turn the flag on to start adding to keystring
-        M.info.add_keys = true
+        state_machine.add_keys = true
         return key
     end
 
     local key_is_alphanumeric = key:match("%w")
     -- append the key to the keystring
-    if M.info.add_keys and key_is_alphanumeric then
-        M.info.key_string = M.info.key_string .. key
+    if state_machine.add_keys and key_is_alphanumeric then
+        state_machine.key_string = state_machine.key_string .. key
 
-    -- try to replace on non-alphanumeric
-    elseif M.info.add_keys and not key_is_alphanumeric then
-        local replace_key = M.config.lookup_table[M.info.key_string]
+        -- try to replace on non-alphanumeric
+    elseif state_machine.add_keys and not key_is_alphanumeric then
+        local replace_key = M.config.lookup_table[state_machine.key_string]
 
         if replace_key then
+            local prefix = ""
+
+            if translated_key == "<CR>" then
+                prefix = "<BS>"
+            end
             --  delete back to the delemeter into the null buffer and insert the replace key
-            vim.api.nvim_input("<ESC>vF" .. dl .. "\"_c" .. replace_key .. key)
+            vim.api.nvim_input(prefix .. "<ESC>vF" .. dl .. "\"_c" .. replace_key .. key)
         end
 
         reset_state_machine()
@@ -58,20 +64,21 @@ M.get_keys = function(key, typed)
     return key
 end
 
+M.setup = function(opts)
+    opts = opts or {}
+    if opts["behavior"] == "overwrite" then
+        M.config = opts
+    else
+        M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+    end
 
-M.run_plugin = function()
-    vim.on_key(M.get_keys)
+    -- runs the actual plugin
+    vim.on_key(get_keys)
 end
 
-M.info = {
-    key_string = "",
-    add_keys = false,
-}
-
+-- default config
 M.config = {
-    clears_list = { "<CR>", },
-    -- delemeter = "\\",
-    delemeter = ";",
+    delemeter = "\\",
     lookup_table = {
         alpha = "α",
         Alpha = "Α",
@@ -140,6 +147,4 @@ M.config = {
         Omega = "Ω",
     },
 }
-
-M.run_plugin()
 return M

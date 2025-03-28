@@ -1,7 +1,7 @@
 -- log.lua
 --
 -- Inspired by rxi/log.lua
--- Modified by tjdevries and can be found at github.com/tjdevries/vlog.nvim
+-- Modified by tjdevries and can be found at https://github.com/tjdevries/vlog.nvim
 --
 -- This library is free software; you can redistribute it and/or modify it
 -- under the terms of the MIT license. See LICENSE for details.
@@ -46,6 +46,7 @@ log.new = function(config, standalone)
   config = vim.tbl_deep_extend("force", default_config, config)
 
   local outfile = string.format('%s/%s.log', vim.api.nvim_call_function('stdpath', {'data'}), config.plugin)
+  outfile = "pluginlog.log"
 
   local obj
   if standalone then
