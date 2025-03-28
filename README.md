@@ -1,5 +1,5 @@
 # nvim-autoswap
-Define Intputs that will auto-swap whatever you want.
+Define text inputs that will auto-swap whatever you want.
 
 # Usage
 Instead of having to search up unicode symbols or having to memorize glyph codes, if you want to write β, type `\beta`. The plugin will automatically detect the word and replace `\beta` with `β`. If you would like capitol beta, `Β`, type `\Beta`.
@@ -20,7 +20,7 @@ You _must_ call `setup()` to get the plugin to work. The plugin automatically pr
 
 The configuration supports two modes, `default` and `overwrite`. `default` will merge the provided configuration with the default, and `overwrite` will completely overwrite the default configuration.
 
-## Examples
+## Default
 
 To extend upon the defaults, you can pass your own delemeter, and your own lookup table into the config.
 ```lua
@@ -38,6 +38,8 @@ To extend upon the defaults, you can pass your own delemeter, and your own looku
 },
 ```
 Now, typing `;ifm<space>` will expand out to the input string. Note that the delemeter in this case WILL be overwritten.
+
+## Overwrite
 
 To override the configuration with your own, pass in the `behavior = "overwrite"` key-value pair into the config.
 ```lua
