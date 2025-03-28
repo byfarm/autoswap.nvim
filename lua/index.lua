@@ -38,17 +38,18 @@ M.get_keys = function(key, typed)
         return key
     end
 
+    local key_is_alphanumeric = key:match("%w")
     -- append the key to the keystring
-    if M.info.add_keys and key ~= " " then
+    if M.info.add_keys and key_is_alphanumeric then
         M.info.key_string = M.info.key_string .. key
 
     -- try to replace on space
-    elseif M.info.add_keys and key == " " then
+    elseif M.info.add_keys and not key_is_alphanumeric then
         local replace_key = M.config.lookup_table[M.info.key_string]
 
         if replace_key then
             --  delete back to the delemeter into the null buffer and insert the replace key
-            vim.api.nvim_input("<ESC>vF" .. dl .. "\"_c" .. replace_key .. " ")
+            vim.api.nvim_input("<ESC>vF" .. dl .. "\"_c" .. replace_key .. key)
         end
 
         reset_state_machine()
