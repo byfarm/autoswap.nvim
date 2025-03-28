@@ -43,7 +43,7 @@ M.get_keys = function(key, typed)
     if M.info.add_keys and key_is_alphanumeric then
         M.info.key_string = M.info.key_string .. key
 
-    -- try to replace on space
+    -- try to replace on non-alphanumeric
     elseif M.info.add_keys and not key_is_alphanumeric then
         local replace_key = M.config.lookup_table[M.info.key_string]
 
