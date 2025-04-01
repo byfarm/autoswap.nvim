@@ -13,8 +13,8 @@ end
 
 ---actrually replaces the stuff wanted
 ---@param prefix string
----@param dl string 
----@param replace_key string 
+---@param dl string
+---@param replace_key string
 ---@param key string
 local function replace(prefix, dl, replace_key, key)
     --  delete back to the delemeter into the null buffer and insert the replace key
