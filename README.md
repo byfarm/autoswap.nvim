@@ -1,4 +1,4 @@
-# nvim-autoswap
+# autoswap.nvim
 Define text inputs that will auto-swap whatever you want.
 
 # Usage
