@@ -11,7 +11,7 @@ By default, most of the greek alphabet is included. See the [configuration](#con
 with [Lazy](https://github.com/folke/lazy.nvim):
 ```lua
 { 
-    "byfarm/nvim-autoswap"
+    "byfarm/autoswap.nvim"
 },
 ```
 You _must_ call `setup()` to get the plugin to work. The plugin automatically provides a user command `StartSwap` to setup and load the default configuration.
@@ -32,7 +32,7 @@ The configuration supports two modes, `default` and `overwrite`. `default` will 
 To extend upon the defaults, you can pass your own delemeter, and your own lookup table into the config.
 ```lua
 {
-    "byfarm/nvim-autoswap",
+    "byfarm/autoswap.nvim",
     config = function()
         local config = {
             delemeter = ";",
@@ -51,7 +51,7 @@ Now, typing `;ifm<space>` will expand out to the input string. Note that the del
 To override the configuration with your own, pass in the `behavior = "overwrite"` key-value pair into the config.
 ```lua
 {
-    "byfarm/nvim-autoswap",
+    "byfarm/autoswap.nvim",
     config = function()
         local config = {
             behavior = "overwrite",
@@ -70,7 +70,7 @@ This example will make it so that ONLY beta is in the lookup table. Note that yo
 By default, the plugin does not enable greedy matching. Greedy matching means that a non-alphanumeric number does _not_ have to be input for the program to search for a match in the lookup table. For example, with the following config
 ```lua
 {
-    "byfarm/nvim-autoswap",
+    "byfarm/autoswap.nvim",
     config = function()
         local config = {
             behavior = "overwrite",
