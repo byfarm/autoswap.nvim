@@ -87,3 +87,79 @@ By default, the plugin does not enable greedy matching. Greedy matching means th
 typing in `;beta` will auto replace with `β`. The default configuration would you require to intput a non-alphanumeric number to get the replacement (`;beta<SPACE>` -> `β `). 
 
 Greedy matching creates the problem of key overlap. If I have two keys: `beta` and `beta2`, `beta2` will never be matched because `beta` will always be matched before `beta2`.
+
+## Defaults
+See the end of `lua/autoswap.lua` for the source.
+```lua
+config = {
+    delemeter = "\\",
+    greedy = false,
+    lookup_table = {
+        alpha = "α",
+        Alpha = "Α",
+
+        beta = "β",
+        Beta = "Β",
+
+        gamma = "γ",
+        Gamma = "Γ",
+
+        delta = "δ",
+        Delta = "Δ",
+
+        epsilon = "ε",
+        Epsilon = "Ε",
+
+        zeta = "ζ",
+        Zeta = "Ζ",
+
+        eta = "η",
+        Eta = "Η",
+
+        theta = "θ",
+        Theta = "Θ",
+
+        kappa = "κ",
+        Kappa = "Ι",
+
+        lambda = "λ",
+        Lambda = "Λ",
+
+        mu = "μ",
+        Mu = "Μ",
+
+        nu = "ν",
+        Nu = "Ν",
+
+        xi = "ξ",
+        Xi = "Ξ",
+
+        pi = "π",
+        Pi = "Π",
+
+        rho = "ρ",
+        Rho = "Ρ",
+
+        sigma = "σ",
+        Sigma = "Σ",
+
+        tau = "τ",
+        Tau = "Τ",
+
+        upsilon = "υ",
+        Upsilon = "Υ",
+
+        phi = "φ",
+        Phi = "Φ",
+
+        chi = "χ",
+        Chi = "Χ",
+
+        psi = "ψ",
+        Psi = "Ψ",
+
+        omega = "ω",
+        Omega = "Ω",
+    },
+}
+```

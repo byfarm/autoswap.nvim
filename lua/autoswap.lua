@@ -1,4 +1,4 @@
-local log = require("log")
+-- local log = require("log")
 local M = {}
 local state_machine = {
     key_string = "",
