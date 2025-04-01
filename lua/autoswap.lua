@@ -11,6 +11,23 @@ local function reset_state_machine()
     state_machine.add_keys = false
 end
 
+---actrually replaces the stuff wanted
+---@param prefix string
+---@param dl string 
+---@param replace_key string 
+---@param key string
+local function replace(prefix, dl, replace_key, key)
+    --  delete back to the delemeter into the null buffer and insert the replace key
+    vim.api.nvim_input(prefix .. "<ESC>vF" .. dl .. "\"_c" .. replace_key .. key)
+end
+
+---gets the replacement based on key from the lookup table
+---@param key string
+---@return string | nil
+local function get_replacement(key)
+    return M.config.lookup_table[key]
+end
+
 ---implements fn for vim.on_key()
 ---@param key string
 ---@param typed string
@@ -44,9 +61,21 @@ local get_keys = function(key, typed)
     if state_machine.add_keys and key_is_alphanumeric then
         state_machine.key_string = state_machine.key_string .. key
 
+        if M.config.greedy == true then
+            -- if greedy want to check if string matches
+            local replace_key = get_replacement(state_machine.key_string)
+
+            -- if string does match make the replacement
+            if replace_key then
+                replace("", dl, replace_key, "")
+                reset_state_machine()
+                return key
+            end
+        end
+
         -- try to replace on non-alphanumeric
     elseif state_machine.add_keys and not key_is_alphanumeric then
-        local replace_key = M.config.lookup_table[state_machine.key_string]
+        local replace_key = get_replacement(state_machine.key_string)
 
         if replace_key then
             local prefix = ""
@@ -54,8 +83,7 @@ local get_keys = function(key, typed)
             if translated_key == "<CR>" then
                 prefix = "<BS>"
             end
-            --  delete back to the delemeter into the null buffer and insert the replace key
-            vim.api.nvim_input(prefix .. "<ESC>vF" .. dl .. "\"_c" .. replace_key .. key)
+            replace(prefix, dl, replace_key, key)
         end
 
         reset_state_machine()
@@ -79,6 +107,7 @@ end
 -- default config
 M.config = {
     delemeter = "\\",
+    greedy = false,
     lookup_table = {
         alpha = "α",
         Alpha = "Α",
