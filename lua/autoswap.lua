@@ -1,15 +1,5 @@
--- local log = require("log")
+local log = require("log")
 local M = {}
-local state_machine = {
-    key_string = "",
-    add_keys = false,
-}
-
-local function reset_state_machine()
-    -- reset the state machine
-    state_machine.key_string = ""
-    state_machine.add_keys = false
-end
 
 ---actrually replaces the stuff wanted
 ---@param prefix string
@@ -36,59 +26,25 @@ local get_keys = function(key, typed)
     -- if not in insert mode or special charachter (newline) then reset the machine
     local translated_key = vim.fn.keytrans(key)
     if vim.api.nvim_get_mode().mode ~= "i" then
-        reset_state_machine()
         return key
     end
-
-    -- if backspace then do -1 from the substring
-    if "<BS>" == translated_key and #state_machine.key_string > 0 then
-        state_machine.key_string = state_machine.key_string:sub(1, #state_machine.key_string - 1)
-        return key
-    end
-
-    local key_string_empty = state_machine.key_string == ""
 
     local dl = M.config.delemeter
 
-    if key_string_empty and key == dl then
-        -- turn the flag on to start adding to keystring
-        state_machine.add_keys = true
-        return key
-    end
-
     local key_is_alphanumeric = key:match("%w")
     -- append the key to the keystring
-    if state_machine.add_keys and key_is_alphanumeric then
-        state_machine.key_string = state_machine.key_string .. key
+    if key_is_alphanumeric then
+        -- if greedy want to check if string matches
+        local replace_words = vim.fn.expand("<cword>")
+        local replacement = get_replacement(replace_words)
 
-        if M.config.greedy == true then
-            -- if greedy want to check if string matches
-            local replace_key = get_replacement(state_machine.key_string)
-
-            -- if string does match make the replacement
-            if replace_key then
-                replace("", dl, replace_key, "")
-                reset_state_machine()
-                return key
-            end
+        -- if string does match make the replacement
+        if replacement then
+            log.info("can replace")
+            -- replace("", dl, replacement, "")
+            return key
         end
-
-        -- try to replace on non-alphanumeric
-    elseif state_machine.add_keys and not key_is_alphanumeric then
-        local replace_key = get_replacement(state_machine.key_string)
-
-        if replace_key then
-            local prefix = ""
-
-            if translated_key == "<CR>" then
-                prefix = "<BS>"
-            end
-            replace(prefix, dl, replace_key, key)
-        end
-
-        reset_state_machine()
     end
-
     return key
 end
 
